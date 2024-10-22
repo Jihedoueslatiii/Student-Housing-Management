@@ -1,84 +1,46 @@
 package tn.esprit.tpfoyer.services;
 
-
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import tn.esprit.tpfoyer.entities.Bloc;
 import tn.esprit.tpfoyer.repositories.BlocRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @AllArgsConstructor
-@Slf4j  // Simple Loggining Façade For Java
-public class BlocServiceImpl  implements IBlocService {
+public class BlocServiceImpl implements IBlocService {
 
+    private final BlocRepository blocRepository;
 
-    BlocRepository blocRepository;
-
-    @Scheduled(fixedRate = 30000) // millisecondes // cron fixedRate
-    //@Scheduled(cron="0/15 * * * * *")
+    @Override
     public List<Bloc> retrieveAllBlocs() {
-
-        List<Bloc> listB = blocRepository.findAll();
-        log.info("taille totale : " + listB.size());
-        for (Bloc b: listB) {
-            log.info("Bloc : " + b);
-        }
-
-        return listB;
+        return blocRepository.findAll();
     }
 
-    // Exemple sans Keywords :
-    @Transactional
-    public List<Bloc> retrieveBlocsSelonCapacite(long c) {
-
-        List<Bloc> listB = blocRepository.findAll();
-        List<Bloc> listBselonC = new ArrayList<>();
-
-        for (Bloc b: listB) {
-            if (b.getCapaciteBloc()>=c)
-                listBselonC.add(b);
-        }
-
-        return listBselonC;
-    }
-
-    @Transactional
+    @Override
     public Bloc retrieveBloc(Long blocId) {
-
-        return blocRepository.findById(blocId).get();
+        return blocRepository.findById(blocId).orElse(null); // Returns null if not found
     }
 
-
-    public Bloc addBloc(Bloc c) {
-
-        return blocRepository.save(c);
-    }
-
-    public Bloc modifyBloc(Bloc bloc) {
+    @Override
+    public Bloc addBloc(Bloc bloc) {
         return blocRepository.save(bloc);
     }
 
     @Override
-    public List<Bloc> trouverBlocsSansFoyer() {
-        return null;
+    public Bloc modifyBloc(Bloc bloc) {
+        return blocRepository.save(bloc);
     }
 
+
+
+    @Override
     public void removeBloc(Long blocId) {
         blocRepository.deleteById(blocId);
     }
 
 
-
-
-
-    public List<Bloc> trouverBlocsParNomEtCap(String nb, long c) {
-        return blocRepository.findAllByNomBlocAndCapaciteBloc(nb,  c);
-    }
-
 }
+
+

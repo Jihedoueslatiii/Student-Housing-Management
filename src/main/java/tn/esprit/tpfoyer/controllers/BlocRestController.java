@@ -43,15 +43,5 @@
             return blocService.modifyBloc(bloc);
         }
 
-        @GetMapping("/trouver-blocs-sans-foyer")
-        public List<Bloc> getBlocsWithoutFoyer() {
-            return blocService.trouverBlocsSansFoyer();
-        }
 
-        @GetMapping("/get-bloc-nb-c/{nb}/{c}")
-        public List<Bloc> recuperBlocsParNomEtCap(
-                @PathVariable("nb") String nb,
-                @PathVariable("c") long c) {
-            return blocService.trouverBlocsParNomEtCap(nb, c);
-        }
     }
